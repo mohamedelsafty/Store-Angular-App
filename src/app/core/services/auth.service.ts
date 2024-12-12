@@ -8,11 +8,8 @@ import { BehaviorSubject } from 'rxjs';
 export class AuthenticationService {
   private _isLoggedInSubject = new BehaviorSubject<boolean>(this.isLoggedIn());
   public isLoggedIn$ = this._isLoggedInSubject.asObservable();
-
   private _userSubject = new BehaviorSubject<User | null>(this.getUser());
   public user$ = this._userSubject.asObservable();
-
-  constructor() {}
 
   login(data: User): void {
     localStorage.setItem('isLoggedIn', 'true');

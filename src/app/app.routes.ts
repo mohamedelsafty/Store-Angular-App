@@ -10,16 +10,26 @@ import { NotFoundComponent } from './features/not-found/not-found/not-found.comp
 
 export const routes: Routes = [
   { path: '', component: LoginComponent, canActivate: [AuthenticationGuard] },
-  { path: 'user-view', component: UserViewComponent, canActivate: [AuthenticationGuard, RoleGuard], data: { role: 'User' } },
-  { path: 'admin-view', component: AdminViewComponent, canActivate: [AuthenticationGuard, RoleGuard], data: { role: 'Admin' } },
   {
-    path: '**',component : NotFoundComponent
-  }
+    path: 'user-view',
+    component: UserViewComponent,
+    canActivate: [AuthenticationGuard, RoleGuard],
+    data: { role: 'User' },
+  },
+  {
+    path: 'admin-view',
+    component: AdminViewComponent,
+    canActivate: [AuthenticationGuard, RoleGuard],
+    data: { role: 'Admin' },
+  },
+  {
+    path: '**',
+    component: NotFoundComponent,
+  },
 ];
-
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

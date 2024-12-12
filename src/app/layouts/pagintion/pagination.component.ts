@@ -1,11 +1,17 @@
-import { NgClass, NgFor } from '@angular/common';
-import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  OnChanges,
+  SimpleChanges,
+} from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-pagination',
   standalone: true,
-  imports:[NgFor,NgClass,TranslateModule],
+  imports: [TranslateModule],
   templateUrl: './pagination.component.html',
   styleUrls: ['./pagination.component.scss'],
 })

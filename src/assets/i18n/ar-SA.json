@@ -1,0 +1,53 @@
+{
+  "Login": {
+    "formTitle": "تسجيل الدخول",
+    "usernameLabel": "اسم المستخدم",
+    "usernameRequiredError": "اسم المستخدم مطلوب",
+    "usernameInvalidError": "اسم المستخدم غير صالح",
+    "passwordLabel": "كلمة المرور",
+    "passwordRequiredError": "كلمة المرور مطلوبة",
+    "submitButton": "تسجيل الدخول",
+    "invalidCredentials": "البيانات غير مسجلة"
+  },
+  "NavBar": {
+    "Logout": "تسجيل الخروج"
+  },
+  "User": {
+    "next": "التالي",
+    "prev": "السابق"
+  },
+  "ErrorMessages": {
+    "network": "خطأ في الشبكة: يرجى التحقق من اتصالك بالإنترنت.",
+    "badRequest": "طلب غير صحيح. يرجى التحقق من البيانات المدخلة.",
+    "notFound": "المورد غير موجود.",
+    "serverError": "خطأ في الخادم. يرجى المحاولة لاحقاً.",
+    "genericError": "خطأ: حدث شيء غير متوقع."
+  },
+  "Admin": {
+    "productForm": {
+      "title": "نموذج المنتج",
+      "editProduct": "تعديل المنتج",
+      "addProduct": "إضافة منتج",
+      "name": "اسم المنتج",
+      "price": "السعر",
+      "category": "الفئة",
+      "cancel": "إلغاء",
+      "save": "حفظ"
+    },
+    "productList": {
+      "addProduct": "إضافة منتج",
+      "productName": "اسم المنتج",
+      "price": "السعر",
+      "category": "الفئة",
+      "actions": "الإجراءات",
+      "edit": "تعديل",
+      "delete": "حذف"
+    },
+    "productMessages": {
+      "productAdded": "تم إضافة المنتج بنجاح",
+      "productUpdated": "تم تحديث المنتج بنجاح",
+      "deleteConfirmation": "هل أنت متأكد أنك تريد حذف هذا المنتج؟",
+      "productDeleted": "تم حذف المنتج بنجاح"
+    }
+  }
+}

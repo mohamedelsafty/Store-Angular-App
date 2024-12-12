@@ -1,56 +1,45 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import { TranslateService, LangChangeEvent } from '@ngx-translate/core';
-
+import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
+import { isPlatformBrowser } from '@angular/common';
+import { Directions, Languages } from '@core/enums/language.enum';
 @Injectable({
   providedIn: 'root',
 })
-export class TranslationService {
-  private langIds: string[] = [];
-  currentLang: BehaviorSubject<string> = new BehaviorSubject('ar');
-
-  constructor(private translate: TranslateService) {
-    const defaultLang = this.getSelectedLanguage() || 'ar';
-    this.translate.addLangs(['en', 'ar']);
-    this.translate.setDefaultLang(defaultLang);
-    this.setLanguage(defaultLang);
-
-    this.translate.onLangChange.subscribe((event: LangChangeEvent) => {
-      this.handleLangChange(event.lang);
-    });
+export class TranslatorService {
+  constructor(
+    private readonly translateService: TranslateService,
+    @Inject(PLATFORM_ID) private readonly platformId: object
+  ) {}
+  initLang() {
+    this.translateService.addLangs([Languages.Ar, Languages.En]);
+    if (isPlatformBrowser(this.platformId)) {
+      const savedLang: Languages =
+        (localStorage.getItem('lang') as Languages) || Languages.En;
+      this.translateService.setDefaultLang(savedLang);
+      this.changeLang(savedLang);
+    }
   }
 
-  loadTranslations(...locales: { lang: string; data: object }[]): void {
-    locales.forEach(locale => {
-      this.translate.setTranslation(locale.lang, locale.data, true);
-      if (!this.langIds.includes(locale.lang)) {
-        this.langIds.push(locale.lang);
-      }
-    });
-
-    this.translate.addLangs(this.langIds);
+  changeLang(lang: Languages) {
+    this.translateService.use(lang);
+    const htmlTag: HTMLHtmlElement = document.getElementsByTagName(
+      'html'
+    )[0] as HTMLHtmlElement;
+    if (lang === Languages.En) {
+      htmlTag.dir = Directions.ltr;
+      htmlTag.lang = Languages.En;
+    } else {
+      htmlTag.dir = Directions.rtl;
+      htmlTag.lang = Languages.Ar;
+    }
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.setItem('lang', lang);
+    }
   }
 
-  setLanguage(lang: string): void {
-    this.translate.use(lang);
-    localStorage.setItem('language', lang);
-    this.handleLangChange(lang);
-  }
-
-  getSelectedLanguage(): string {
-    return localStorage.getItem('language') || this.translate.getDefaultLang();
-  }
-
-  private handleLangChange(lang: string): void {
-    this.currentLang.next(lang);
-
-    const html = document.documentElement;
-    const direction = lang === 'ar' ? 'rtl' : 'ltr';
-
-    html.lang = lang;
-    html.dir = direction;
-    html.style.direction = direction;
-
-    document.body.style.textAlign = lang === 'ar' ? 'right' : 'left';
+  get currentLang(): Languages {
+    return (this.translateService.currentLang ||
+      localStorage.getItem('lang') ||
+      Languages.En) as Languages;
   }
 }

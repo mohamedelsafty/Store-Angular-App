@@ -1,6 +1,12 @@
-import { Component, Inject } from '@angular/core';
+import { Component, inject, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -24,27 +30,41 @@ import { TranslateModule } from '@ngx-translate/core';
     MatSelectModule,
     ReactiveFormsModule,
     CommonModule,
-    TranslateModule
+    TranslateModule,
   ],
   templateUrl: './add-edit-product-dialog.component.html',
-  styleUrls: ['./add-edit-product-dialog.component.scss']
+  styleUrls: ['./add-edit-product-dialog.component.scss'],
 })
-export class AddEditProductDialogComponent {
-  productForm: FormGroup;
+export class AddEditProductDialogComponent implements OnInit {
+  public dialogRef!: MatDialogRef<AddEditProductDialogComponent>;
+  private fb: FormBuilder = inject(FormBuilder);
+  private productService: ProductService = inject(ProductService);
+  productForm!: FormGroup;
   isEdit: boolean;
   categories: string[] = ['Electronics', 'Clothing', 'Food', 'Books', 'Toys']; // Example categories
 
-  constructor(
-    public dialogRef: MatDialogRef<AddEditProductDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any,
-    private fb: FormBuilder,
-    private productService: ProductService
-  ) {
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any) {
     this.isEdit = data.isEdit;
+  }
+
+  ngOnInit(): void {
+    this.buildForm();
+  }
+
+  buildForm(): void {
     this.productForm = this.fb.group({
-      title: [data.isEdit ? data.product.title : '', Validators.required],
-      price: [data.isEdit ? data.product.price : '', Validators.required],
-      category: [data.isEdit ? data.product.category : '', Validators.required],
+      title: [
+        this.data.isEdit ? this.data.product.title : '',
+        Validators.required,
+      ],
+      price: [
+        this.data.isEdit ? this.data.product.price : '',
+        Validators.required,
+      ],
+      category: [
+        this.data.isEdit ? this.data.product.category : '',
+        Validators.required,
+      ],
     });
   }
 
@@ -56,9 +76,11 @@ export class AddEditProductDialogComponent {
     const productData = this.productForm.value;
 
     if (this.isEdit) {
-      this.productService.updateProduct(this.data.product.id, productData).subscribe(() => {
-        this.dialogRef.close(true);
-      });
+      this.productService
+        .updateProduct(this.data.product.id, productData)
+        .subscribe(() => {
+          this.dialogRef.close(true);
+        });
     } else {
       this.productService.addProduct(productData).subscribe(() => {
         this.dialogRef.close(true);

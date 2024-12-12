@@ -1,4 +1,3 @@
-
 .add-product {
   margin: 20px 0 0;
   display: flex;
@@ -23,8 +22,6 @@
   background-color: #fff;
 }
 
-
-
 table {
   width: 100%;
   border-collapse: collapse;
@@ -33,21 +30,23 @@ table {
 }
 
 :host ::ng-deep table thead {
-  background-color: #CA5908 !important;
+  background-color: #005cbb !important;
 }
 :host ::ng-deep table thead .mat-header-cell {
-  color: #FFF !important;
+  color: #fff !important;
 }
 .w-20 {
   width: 20% !important;
 }
 
-mat-header-row, mat-row {
+mat-header-row,
+mat-row {
   display: flex;
   justify-content: space-between;
 }
 
-th, td {
+th,
+td {
   padding: 12px;
   text-align: left;
   font-size: 14px;
@@ -56,10 +55,9 @@ th, td {
   max-width: 150px;
 }
 
-th{
+th {
   color: #fff;
 }
-
 
 button {
   margin-right: 8px;
@@ -83,13 +81,11 @@ mat-header-row {
   font-weight: bold;
 }
 
-
 mat-paginator {
   display: flex;
   justify-content: center;
   margin-top: 20px;
 }
-
 
 @media (max-width: 768px) {
   .table-container {
@@ -97,7 +93,8 @@ mat-paginator {
     overflow-x: auto;
   }
 
-  th, td {
+  th,
+  td {
     padding: 10px;
     font-size: 12px;
   }
@@ -107,3 +104,10 @@ mat-paginator {
   }
 }
 
+.loader {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 30vh;
+}

@@ -1,26 +1,17 @@
 import { Component } from '@angular/core';
-import { TranslationService } from './core/services/utilites/translate.service';
+import { TranslatorService } from './core/services/utilites/translate.service';
 
-import { locale as enLang } from '@assets/i18n/en'
+import { locale as enLang } from '@assets/i18n/en';
 import { locale as arLang } from '@assets/i18n/ar';
+import { RouterOutlet } from '@angular/router';
+import { NavBarComponent } from './layouts/nav-bar/navbar.component';
 
 @Component({
   selector: 'app-root',
+  standalone: true,
+  imports: [RouterOutlet, NavBarComponent],
+  providers: [TranslatorService],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
-export class AppComponent {
-  title = 'store-angular-app';
-
-  constructor(private translationService : TranslationService){
-    this.translationService.loadTranslations(arLang, enLang);
-  }
-
-  ngOnInit(): void {
-    this.translationService.setLanguage(
-      this.translationService.getSelectedLanguage()
-    );
-
-  }
-
-}
+export class AppComponent {}

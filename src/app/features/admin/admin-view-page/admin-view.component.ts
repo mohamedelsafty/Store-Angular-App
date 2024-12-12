@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatPaginatorModule } from '@angular/material/paginator'; // Import paginator module
@@ -14,10 +14,10 @@ import { PaginationComponent } from '../../../layouts/pagintion/pagination.compo
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { DeleteConfirmationDialogComponent } from '../components/delete-confirmation-dialog/delete-confirmation-dialog.component';
-import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { Subscription } from 'rxjs';
 import { Title } from '@angular/platform-browser';
+import { LoadingService } from '@core/services/loading.service';
 
 @Component({
   selector: 'app-admin-view',
@@ -30,20 +30,23 @@ import { Title } from '@angular/platform-browser';
     MatButtonModule,
     MatIconModule,
     MatInputModule,
-    MatFormField,
-    MatLabel,
-    AddEditProductDialogComponent,
     PaginationComponent,
-    DeleteConfirmationDialogComponent,
     CurrencyPipe,
     CommonModule,
     TranslateModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
   ],
   templateUrl: './admin-view.component.html',
-  styleUrls: ['./admin-view.component.scss']
+  styleUrls: ['./admin-view.component.scss'],
 })
 export class AdminViewComponent implements OnInit {
+  private readonly loadingService = inject(LoadingService);
+  private productService: ProductService = inject(ProductService);
+  public dialog: MatDialog = inject(MatDialog);
+  private snackBar: MatSnackBar = inject(MatSnackBar);
+  private translateService: TranslateService = inject(TranslateService);
+  private titleService: Title = inject(Title);
+
   private productsSubscription!: Subscription;
   products: Product[] = [];
   paginatedProducts: Product[] = [];
@@ -53,14 +56,6 @@ export class AdminViewComponent implements OnInit {
   currentPage: number = 1;
   loading = true;
 
-  constructor(
-    private productService: ProductService,
-    public dialog: MatDialog,
-    private snackBar: MatSnackBar,
-    private translateService :TranslateService,
-    private titleService: Title,
-  ) {}
-
   ngOnInit() {
     this.loadProducts();
     this.titleService.setTitle('Admin Page');
@@ -69,14 +64,14 @@ export class AdminViewComponent implements OnInit {
   loadProducts(): void {
     this.loading = true;
     this.productService.getProducts();
-    this.productsSubscription = this.productService.products$.subscribe((data) => {
-      this.products = data;
-      this.updateProductList(data);
-      this.totalProducts = data.length;
-    });
+    this.productsSubscription = this.productService.products$.subscribe(
+      (data) => {
+        this.products = data;
+        this.updateProductList(data);
+        this.totalProducts = data.length;
+      }
+    );
   }
-
-
 
   updateProductList(products: Product[]): void {
     this.products = products;
@@ -85,15 +80,12 @@ export class AdminViewComponent implements OnInit {
     this.loading = false;
   }
 
-
   onPageChange(page: any): void {
     this.currentPage = page;
     const startIndex = (page - 1) * this.pageSize;
     const endIndex = startIndex + this.pageSize;
     this.paginatedProducts = this.products.slice(startIndex, endIndex);
   }
-
-
 
   paginateProducts(startIndex: number, endIndex: number): void {
     this.paginatedProducts = this.products.slice(startIndex, endIndex);
@@ -103,13 +95,17 @@ export class AdminViewComponent implements OnInit {
     const dialogRef = this.dialog.open(AddEditProductDialogComponent, {
       width: '80%',
       maxWidth: '600px',
-      data: { isEdit: false }
+      data: { isEdit: false },
     });
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         this.loadProducts();
-        this.snackBar.open(this.translateService.instant('Admin.productMessages.productAdded'), 'Close', { duration: 3000 });
+        this.snackBar.open(
+          this.translateService.instant('Admin.productMessages.productAdded'),
+          'Close',
+          { duration: 3000 }
+        );
       }
     });
   }
@@ -118,28 +114,38 @@ export class AdminViewComponent implements OnInit {
     const dialogRef = this.dialog.open(AddEditProductDialogComponent, {
       width: '80%',
       maxWidth: '600px',
-      data: { isEdit: true, product }
+      data: { isEdit: true, product },
     });
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         this.loadProducts();
-        this.snackBar.open(this.translateService.instant('Admin.productMessages.productUpdated'), 'Close', { duration: 3000 });
+        this.snackBar.open(
+          this.translateService.instant('Admin.productMessages.productUpdated'),
+          'Close',
+          { duration: 3000 }
+        );
       }
     });
   }
 
-  deleteProduct(product : Product): void {
+  deleteProduct(product: Product): void {
     const dialogRef = this.dialog.open(DeleteConfirmationDialogComponent, {
       width: '500px',
-      data:  product.title
+      data: product.title,
     });
 
     dialogRef.afterClosed().subscribe((result: boolean) => {
       if (result) {
         this.productService.deleteProduct(product.id).subscribe(() => {
           this.loadProducts();
-          this.snackBar.open(this.translateService.instant('Admin.productMessages.productDeleted'), 'Close', { duration: 3000 });
+          this.snackBar.open(
+            this.translateService.instant(
+              'Admin.productMessages.productDeleted'
+            ),
+            'Close',
+            { duration: 3000 }
+          );
         });
       }
     });

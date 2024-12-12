@@ -1,7 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthenticationService } from '@core/services/auth.service';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { User } from '@core/models/user.model';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
@@ -25,26 +30,32 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
     MatIconModule,
     MatProgressSpinnerModule,
     MatSnackBarModule,
-    TranslateModule
+    TranslateModule,
   ],
 
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent {
-  loginForm !: FormGroup;
+  private readonly router: Router = inject(Router);
+  private readonly snackBar: MatSnackBar = inject(MatSnackBar);
+  private readonly authService: AuthenticationService = inject(
+    AuthenticationService
+  );
+  private readonly translateService: TranslateService =
+    inject(TranslateService);
+
+  loginForm!: FormGroup;
   users: User[] = [
     { username: 'user', password: 'user', role: 'User' },
     { username: 'admin', password: 'admin', role: 'Admin' },
   ];
 
-  constructor(
-    private router: Router,
-    private snackBar: MatSnackBar,
-    private authService: AuthenticationService,
-    private translateService :TranslateService
-
-  ) {
+  constructor() // private readonly router: Router,
+  // private readonly snackBar: MatSnackBar,
+  // private readonly authService: AuthenticationService,
+  // private readonly translateService: TranslateService
+  {
     this.initForm();
   }
 
@@ -57,7 +68,9 @@ export class LoginComponent {
 
   onSubmit() {
     const { username, password } = this.loginForm.value;
-    const user = this.users.find(u => u.username === username && u.password === password);
+    const user = this.users.find(
+      (u) => u.username === username && u.password === password
+    );
 
     if (user) {
       localStorage.setItem('role', user.role);
@@ -66,7 +79,9 @@ export class LoginComponent {
       localStorage.setItem('user', JSON.stringify(user));
 
       this.authService.login(user);
-      this.router.navigate([user.role === 'Admin' ? '/admin-view' : '/user-view']);
+      this.router.navigate([
+        user.role === 'Admin' ? '/admin-view' : '/user-view',
+      ]);
     } else {
       this.SnackBar(this.translateService.instant('Login.invalidCredentials'));
     }
@@ -75,7 +90,7 @@ export class LoginComponent {
   SnackBar(message: string) {
     this.snackBar.open(message, 'OK', {
       duration: 4000,
-      panelClass: ['white-snackbar']
+      panelClass: ['white-snackbar'],
     });
   }
 }

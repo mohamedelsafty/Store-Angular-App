@@ -7,16 +7,16 @@
 
   .category {
     padding: 10px 20px;
-    background-color:  #ad5617;
+    background-color: #ad5617;
     color: white;
     border-radius: 25px;
     cursor: pointer;
     transition: background-color 0.3s;
 
-    box-sizing: border-box;  // Ensure padding and border are included in the width calculation
+    box-sizing: border-box; // Ensure padding and border are included in the width calculation
 
     &:hover {
-      background-color: #ff7a33;
+      background-color: #005cbb;
     }
 
     &.active {
@@ -26,7 +26,6 @@
   }
 }
 
-
 @media (max-width: 600px) {
   .categories {
     flex-direction: row;
@@ -35,6 +34,6 @@
   }
 
   .category {
-    flex: 1 1 calc(50% - 10px);  // Ensure only two items per row
+    flex: 1 1 calc(50% - 10px); // Ensure only two items per row
   }
 }
